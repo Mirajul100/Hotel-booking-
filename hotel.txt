@@ -2,3 +2,7 @@ User can see list of hotel
 User can book the hotel 
 User can get reservation ticket
 
+class 
+User 
+Hotel
+Reservation
