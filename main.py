@@ -4,20 +4,21 @@ from booking import Hotel , Reservation , PaymentValid
 df = pd.read_csv("005 hotels.csv")
 
 print (df)
-hotel_ID = input("Enter the hotel id : ")
-hotel = Hotel(hotel_id= hotel_ID)
-hotel1 = Hotel(hotel_id=hotel_ID)
-if hotel.available():
-    number = input("Enter your credit card number : ")
-    payment_valid = PaymentValid(number)
-    if payment_valid.credit_card_valid(expiration="12/26" , holder="JOHN SMITH" , cvc="123"):
-        hotel.booking()
+try :
+    hotel_ID = input("Enter the hotel id : ")
+    hotel = Hotel(hotel_id= hotel_ID)
+    hotel1 = Hotel(hotel_id=hotel_ID)
+    if hotel.available():
+        number = input("Enter your credit card number : ")
         name = input ("Enter your name : ")
-        reservation = Reservation(name , hotel , hotel1)
-        ticket = reservation.generate()
-        print (ticket)
+        payment_valid = PaymentValid(number)
+        if payment_valid.credit_card_valid(expiration="12/26" , holder=name.title().upper() , cvc="123"):
+            hotel.booking()
+            reservation = Reservation(name , hotel , hotel1)
+            ticket = reservation.generate()
+        else :
+            print ("There was problem in your payment!")
     else :
-        print ("There was problem in your payment!")
-
-else :
-    print ("Hotel is not free today")
+        print ("Hotel is not free today")
+except(ValueError):
+    print ("Please enter the right hotel id")
