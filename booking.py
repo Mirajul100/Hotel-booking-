@@ -2,8 +2,11 @@ import pandas as pd
 from fpdf import FPDF
 import time
 
+# Read CSV file
 df = pd.read_csv("005 hotels.csv" , dtype= {"id" : str})
+# Convert this into dictionary 
 card_df = pd.read_csv("002 cards.csv" , dtype=str).to_dict(orient="records")
+card_valid_df = pd.read_csv("003 card-security.csv" , dtype=str)
 date_time = time.strftime("%d-%m-%Y")
 
 class Hotel:
@@ -30,13 +33,14 @@ class Reservation:
         self.city = city
 
     def generate(self):
-
+        
+        # Generate the pfl file 
         pdf = FPDF(orientation="p" , unit="mm" , format="A4")
         pdf.add_page()
 
         pdf.set_font(family="Times" , size=20 , style="B")
         pdf.set_text_color(64 , 45 , 4)
-        pdf.cell(w= 0 , h=10 , txt="----Thank you for our hotel reservation---" ,align="C" , ln=1 )
+        pdf.cell(w= 0 , h=10 , txt="---Thank you for our hotel reservation---" ,align="C" , ln=1 )
 
         pdf.set_font(family="Times" , size=14 , style="U")
         pdf.cell(w= 0 , h = 20 , txt= f"Here are your hotel booking data : {date_time}" , align="C" , ln=1)
@@ -62,6 +66,15 @@ class PaymentValid:
                       "holder":holder,
                       "cvc":cvc}
         if valid_card in card_df:
+            return True
+        else :
+            return False
+        
+# Inherited the parent class PaymentValid
+class CardValid(PaymentValid):
+    def authentication(self , given_pass):
+        password = card_valid_df.loc[card_valid_df["number"] == self.number , "password"].squeeze()
+        if password == given_pass:
             return True
         else :
             return False

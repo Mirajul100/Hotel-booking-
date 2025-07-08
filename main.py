@@ -1,5 +1,5 @@
 import pandas as pd
-from booking import Hotel , Reservation , PaymentValid
+from booking import Hotel , Reservation , CardValid
 
 df = pd.read_csv("005 hotels.csv")
 
@@ -9,13 +9,19 @@ try :
     hotel = Hotel(hotel_id= hotel_ID)
     hotel1 = Hotel(hotel_id=hotel_ID)
     if hotel.available():
-        number = input("Enter your credit card number : ")
         name = input ("Enter your name : ")
-        payment_valid = PaymentValid(number)
-        if payment_valid.credit_card_valid(expiration="12/26" , holder=name.title().upper() , cvc="123"):
-            hotel.booking()
-            reservation = Reservation(name , hotel , hotel1)
-            ticket = reservation.generate()
+        number = input("Enter your credit card number : ")
+        cvc = input ("Enter the credit card cvc number : ")
+        payment_valid = CardValid(number)
+        if payment_valid.credit_card_valid(expiration="12/26" , holder=name.title().upper() , cvc=cvc):
+            given_pass = input ("Enter the chard password : ")
+            if payment_valid.authentication(given_pass=given_pass):
+                hotel.booking()
+                reservation = Reservation(name , hotel , hotel1)
+                ticket = reservation.generate()
+                print("Successfully booking hotel")
+            else:
+                print ("The card is not authentication")
         else :
             print ("There was problem in your payment!")
     else :
