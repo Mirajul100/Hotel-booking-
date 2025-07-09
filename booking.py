@@ -3,10 +3,10 @@ from fpdf import FPDF
 import time
 
 # Read CSV file
-df = pd.read_csv("005 hotels.csv" , dtype= {"id" : str})
+df = pd.read_csv("information_file/005 hotels.csv" , dtype= {"id" : str})
 # Convert this into dictionary 
-card_df = pd.read_csv("002 cards.csv" , dtype=str).to_dict(orient="records")
-card_valid_df = pd.read_csv("003 card-security.csv" , dtype=str)
+card_df = pd.read_csv("information_file/002 cards.csv" , dtype=str).to_dict(orient="records")
+card_valid_df = pd.read_csv("information_file/003 card-security.csv" , dtype=str)
 date_time = time.strftime("%d-%m-%Y")
 
 class Hotel:
@@ -17,7 +17,7 @@ class Hotel:
 
     def booking(self):
         df.loc[df["id"] == self.hotel_id , "available"] = "no"
-        df.to_csv("005 hotels.csv" , index=False)
+        df.to_csv("information_file/005 hotels.csv" , index=False)
 
     def available(self):
         find = df.loc[df["id"] == self.hotel_id , "available"].squeeze()
@@ -54,7 +54,7 @@ class Reservation:
         pdf.set_font(family="Times" , size=14 , style="")
         pdf.cell(w=50, h = 8 , txt= f"City Name   : {self.city.city_name}" , align="L" , ln=1)
 
-        pdf.output("reservation.pdf")
+        pdf.output("pdf/reservation.pdf")
     
 class PaymentValid:
     def __init__(self , number):
@@ -78,3 +78,34 @@ class CardValid(PaymentValid):
             return True
         else :
             return False
+
+class SpaReservation(Reservation):
+    def spa_ticket_generate(self , user_input):
+        if user_input == "yes":
+
+            pdf = FPDF(orientation="p" , unit="mm" , format="A4")
+            pdf.add_page()
+
+            pdf.set_font(family="Times" , size=20 , style="B")
+            pdf.set_text_color(64 , 45 , 4)
+            pdf.cell(w= 0 , h=10 , txt="---Thank you for our hotel reservation---" ,align="C" , ln=1 )
+
+            pdf.set_font(family="Times" , size=14 , style="U")
+            pdf.cell(w= 0 , h = 20 , txt= f"Here are your Spa booking data : {date_time}" , align="C" , ln=1)
+
+            pdf.set_font(family="Times" , size=14 , style="")
+            pdf.cell(w=50 , h = 8 , txt= f"Name           : {self.customer_name.title()}" , align="L" , ln=1)
+
+            pdf.set_font(family="Times" , size=14 , style="")
+            pdf.cell(w=50, h = 8 , txt= f"Hotel Name : {self.hotel.name.title()}" , align="L" , ln=1)
+            
+            pdf.set_font(family="Times" , size=14 , style="")
+            pdf.cell(w=50, h = 8 , txt= f"City Name   : {self.city.city_name}" , align="L" , ln=1)
+
+            pdf.set_font(family="Times" , size=14 , style="")
+            pdf.cell(w=50 , h= 8 , txt="Thank you for spa reservation" , align="L" ,ln=1)
+
+            pdf.output("pdf/spa_reservation.pdf")
+        else :
+            print ("Thank You for visiting us")
+        

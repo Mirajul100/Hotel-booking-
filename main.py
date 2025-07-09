@@ -1,7 +1,7 @@
 import pandas as pd
-from booking import Hotel , Reservation , CardValid
+from booking import Hotel , SpaReservation , CardValid , Reservation
 
-df = pd.read_csv("005 hotels.csv")
+df = pd.read_csv("information_file/005 hotels.csv")
 
 print (df)
 try :
@@ -20,6 +20,9 @@ try :
                 reservation = Reservation(name , hotel , hotel1)
                 ticket = reservation.generate()
                 print("Successfully booking hotel")
+                spa = input ("Do you want to book spa package? : ")
+                spa_reservation = SpaReservation(customer_name=name , hotel_name=hotel , city=hotel)
+                spa_reservation.spa_ticket_generate(user_input=spa.lower())
             else:
                 print ("The card is not authentication")
         else :
